@@ -14,6 +14,73 @@ class App extends React.Component {
       }
     }
   }
+  onChangeType=(value)=>{
+    this.setState({
+     filters: { 
+       type: value
+     }
+    })
+  }
+
+  onFindPetsClick=()=>{
+    if(this.state.filters.type === "all"){
+      fetch('/api/pets')
+      .then(resp => resp.json())
+      .then(json =>{
+      //debugger
+      this.setState({
+        pets: json
+      })
+    })
+    //debugger
+    }
+    else if (this.state.filters.type === "cat"){
+        fetch('/api/pets?type=cat')
+        .then(resp => resp.json())
+        .then(json =>{
+      //debugger
+        this.setState({
+          pets: json
+        })
+      })
+    }else if(this.state.filters.type === "dog"){
+      fetch("/api/pets?type=dog")
+      .then(resp => resp.json())
+        .then(json =>{
+      //debugger
+        this.setState({
+          pets: json
+        })
+      })
+    }else if (this.state.filters.type === "micropig"){
+      fetch("/api/pets?type=micropig")
+      .then(resp => resp.json())
+        .then(json =>{
+      //debugger
+        this.setState({
+          pets: json
+        })
+      })
+    }
+  }
+       
+  onAdoptPet=(id)=>{
+    //debugger
+    //let pet = this.state.pets.find(pet=> pet.id === id)
+    this.setState((previousState)=>{
+      let newState = previousState.pets.map( pet=>{
+          if(pet.id===id){
+            return {...pet, isAdopted: true}
+          } else{
+            return pet
+          }
+      }
+      )
+      return {pets: newState }
+    })
+
+
+  }
 
   render() {
     return (
@@ -24,10 +91,10 @@ class App extends React.Component {
         <div className="ui container">
           <div className="ui grid">
             <div className="four wide column">
-              <Filters />
+              <Filters onChangeType = {this.onChangeType} onFindPetsClick={this.onFindPetsClick}/>
             </div>
             <div className="twelve wide column">
-              <PetBrowser />
+              <PetBrowser onAdoptPet={this.onAdoptPet} arrPets={this.state.pets}/>
             </div>
           </div>
         </div>
